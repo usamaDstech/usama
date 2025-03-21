@@ -148,24 +148,43 @@ class _HomeScreenState extends State<HomeScreen> {
       itemBuilder: (context, index) {
         final subCategory = subCategories[index];
         final isSelected = provider.selectedSubCategory == subCategory;
+        final quantity = provider.getTotalSubCategoryQuantity(subCategory);
         return GestureDetector(
           onTap: () => provider.setSelectedSubCategory(subCategory,int.parse(provider.selectedCategory?.id.toString()??"0")),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: isSelected?Colors.red.shade900:Colors.grey.shade300,width:isSelected? 3:2),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(subCategory.image ?? ""),
-                      radius: 30,
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(color: isSelected?Colors.red.shade900:Colors.grey.shade300,width:isSelected? 3:2),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(subCategory.image ?? ""),
+                          radius: 30,
+                        ),
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      top: -4,
+                      right: -4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(32),
+                            border: Border.all(color: isSelected?Colors.red.shade900:const Color(0xffD9E4E8)),
+                            color: Colors.white
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        child: Text("$quantity",style: const TextStyle(fontSize: 10),),
+                      ),
+                    )
+                  ],
                 ),
                 const SizedBox(height: 5),
                 Text(subCategory.name ?? "", style: const TextStyle(fontSize: 12)),

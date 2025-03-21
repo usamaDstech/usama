@@ -38,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         leadingWidth: 70,
         centerTitle: true,
         title: SvgPicture.asset(Images.logo3),
+        surfaceTintColor: Colors.transparent,
         actions: [
           Container(
               decoration: BoxDecoration(
@@ -51,17 +52,24 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildCategoryChips(provider),
-          SizedBox(
-              height: 100,
-              child: _buildCategoryIcons(provider)),
-          Expanded(child: _buildProductGrid(provider)),
-          _buildFreeShippingBanner(),
-        ],
-      ),
+          : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+            _buildCategoryChips(provider),
+            SizedBox(
+                height: 115,
+                child: _buildCategoryIcons(provider)),
+            const Padding(
+              padding: EdgeInsets.only(left: 12.0),
+              child: Text("Products",style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.bold),),
+            ),
+            Expanded(child: _buildProductGrid(provider)),
+            _buildFreeShippingBanner(),
+                    ],
+                  ),
+          ),
     );
   }
 
@@ -124,23 +132,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final subCategories = provider.selectedCategory!.subCategory ?? [];
 
-    return ListView.separated(
+    return ListView.builder(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       itemCount: subCategories.length,
       itemBuilder: (context, index) {
         final subCategory = subCategories[index];
-
+        final isSelected = provider.selectedSubCategory == subCategory;
         return GestureDetector(
           onTap: () => provider.setSelectedSubCategory(subCategory),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(subCategory.image ?? ""),
-                  radius: 30,
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(color: isSelected?Colors.red.shade900:Colors.grey.shade300,width:isSelected? 3:2),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(subCategory.image ?? ""),
+                      radius: 30,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(subCategory.name ?? "", style: const TextStyle(fontSize: 12)),
@@ -149,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       },
-      separatorBuilder: (context, index) => const SizedBox(width: 10),
     );
   }
 
@@ -244,13 +260,31 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(8),
       child: Container(
         padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(color: const Color(0xff17A2B8), borderRadius: BorderRadius.circular(10)),
         child: Row(
-          children: const [
-            Icon(Icons.local_shipping, color: Colors.white, size: 30),
-            SizedBox(width: 10),
-            Expanded(child: Text("Free Shipping Over \$0\nFree returns and exchange", style: TextStyle(color: Colors.white))),
-            Icon(Icons.link, color: Colors.white),
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: Colors.white
+                ),
+                child: Image.asset(Images.rider, height: 40, width: 40)),
+            const SizedBox(width: 20),
+            const Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Free Shipping Over \$0", style: TextStyle(fontSize:16,color: Colors.white,fontWeight: FontWeight.bold)),
+                Text("Free returns and exchange", style: TextStyle(color: Colors.white)),
+              ],
+            )),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.red.shade900,
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: SvgPicture.asset(Images.call),
+            )
           ],
         ),
       ),

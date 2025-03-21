@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -147,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final subCategory = subCategories[index];
         final isSelected = provider.selectedSubCategory == subCategory;
         return GestureDetector(
-          onTap: () => provider.setSelectedSubCategory(subCategory),
+          onTap: () => provider.setSelectedSubCategory(subCategory,int.parse(provider.selectedCategory?.id.toString()??"0")),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Column(
@@ -203,6 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   Widget _buildProductCard(product) {
+    log(product.name.toString());
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

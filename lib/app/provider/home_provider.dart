@@ -21,7 +21,7 @@ class HomeProvider extends ChangeNotifier {
         categories = data.map((e) => CategoryModel.fromJson(e)).toList();
         if (categories.isNotEmpty) {
           setSelectedCategory(categories.first);
-          setSelectedSubCategory(categories.first.subCategory!.first);
+          setSelectedSubCategory(categories.first.subCategory!.first,int.parse(categories.first.id.toString()??"0"));
         }
       }
     } catch (e) {
@@ -34,22 +34,24 @@ class HomeProvider extends ChangeNotifier {
     selectedCategory = category;
     notifyListeners();
   }
-  void setSelectedSubCategory(SubCategory subCategory) {
+  void setSelectedSubCategory(SubCategory subCategory, int categoryId) {
     selectedSubCategory = subCategory;
     log(subCategory.id.toString());
-    fetchProducts(int.parse(subCategory.id.toString()));
+    fetchProducts(categoryId, int.parse(subCategory.id.toString())); // Pass both categoryId and subCategoryId
     notifyListeners();
   }
 
-  void fetchProducts(int subCategoryId) {
+
+  void fetchProducts(int categoryId, int subCategoryId) {
     products = categories
-        .expand((category) => category.subCategory ?? <SubCategory>[]) // Get all subcategories
+        .where((category) => category.id == categoryId) // Filter by categoryId
+        .expand((category) => category.subCategory ?? <SubCategory>[]) // Get subcategories of the matching category
         .where((subCategory) => subCategory.id == subCategoryId) // Filter by subCategoryId
         .expand((subCategory) => subCategory.products ?? <Products>[]) // Get products in the matching subcategory
         .toList(); // Convert to List<Products>
-
     notifyListeners();
   }
+
 
 
 

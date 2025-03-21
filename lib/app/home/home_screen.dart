@@ -84,6 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Stack(
+                alignment: Alignment.topRight,
+                clipBehavior: Clip.none,
                 children: [
                   ChoiceChip(
                     label: Text(category.name ?? ""),
@@ -105,14 +107,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32),
-                        border: Border.all(color: const Color(0xffD9E4E8)),
-                        color: Colors.white
+                  Positioned(
+                    top: -4,
+                    right: -4,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(32),
+                          border: Border.all(color: const Color(0xffD9E4E8)),
+                          color: Colors.white
+                      ),
+                      padding: const EdgeInsets.all(4),
+                      child: Text("$productCount",style: const TextStyle(fontSize: 10),),
                     ),
-                    padding: const EdgeInsets.all(4),
-                    child: Text("$productCount",style: const TextStyle(fontSize: 10),),
                   )
                 ],
               ),

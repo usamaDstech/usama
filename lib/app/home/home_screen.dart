@@ -23,55 +23,65 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<HomeProvider>(context);
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: const Color(0xfff0f6f8)
-          ),
-          padding: const EdgeInsets.all(12),
-          margin: const EdgeInsets.fromLTRB(16,4,4,4),
-          child: SvgPicture.asset(Images.drawer),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        dividerTheme: const DividerThemeData(
+          color: Colors.transparent,
         ),
-        leadingWidth: 70,
-        centerTitle: true,
-        title: SvgPicture.asset(Images.logo3),
-        surfaceTintColor: Colors.transparent,
-        actions: [
-          Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: const Color(0xfff0f6f8)
-              ),
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.only(right: 16),
-              child: SvgPicture.asset(Images.search)),
-        ],
       ),
-      body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-            child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-            _buildCategoryChips(provider),
-            SizedBox(
-                height: 115,
-                child: _buildCategoryIcons(provider)),
-            const Padding(
-              padding: EdgeInsets.only(left: 12.0),
-              child: Text("Products",style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.bold),),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 10,
+          leading: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: const Color(0xfff0f6f8)
             ),
-            Expanded(child: _buildProductGrid(provider)),
-            _buildFreeShippingBanner(),
-                    ],
-                  ),
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.fromLTRB(16,4,4,4),
+            child: SvgPicture.asset(Images.drawer),
           ),
+          leadingWidth: 70,
+          centerTitle: true,
+          title: SvgPicture.asset(Images.logo3),
+          surfaceTintColor: Colors.transparent,
+          actions: [
+            Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: const Color(0xfff0f6f8)
+                ),
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(right: 16),
+                child: SvgPicture.asset(Images.search)),
+          ],
+
+        ),
+        persistentFooterButtons: [
+          _buildFreeShippingBanner(),
+        ],
+        body: provider.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              child: ListView(
+                      children: [
+                        const Divider(),
+              _buildCategoryChips(provider),
+              SizedBox(
+                  height: 115,
+                  child: _buildCategoryIcons(provider)),
+              const Padding(
+                padding: EdgeInsets.only(left: 12.0),
+                child: Text("Products",style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.bold),),
+              ),
+              Expanded(child: _buildProductGrid(provider)),
+                      ],
+                    ),
+            ),
+      ),
     );
   }
 
@@ -206,6 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 0.7,
@@ -284,37 +296,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFreeShippingBanner() {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(color: const Color(0xff17A2B8), borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          children: [
-            Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Colors.white
-                ),
-                child: Image.asset(Images.rider, height: 40, width: 40)),
-            const SizedBox(width: 20),
-            const Expanded(child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Free Shipping Over \$0", style: TextStyle(fontSize:16,color: Colors.white,fontWeight: FontWeight.bold)),
-                Text("Free returns and exchange", style: TextStyle(color: Colors.white)),
-              ],
-            )),
-            Container(
-              padding: const EdgeInsets.all(10),
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(color: const Color(0xff17A2B8), borderRadius: BorderRadius.circular(10)),
+      child: Row(
+        children: [
+          Container(
               decoration: BoxDecoration(
-                color: Colors.red.shade900,
-                borderRadius: BorderRadius.circular(32),
+                borderRadius: BorderRadius.circular(6),
+                color: Colors.white
               ),
-              child: SvgPicture.asset(Images.call),
-            )
-          ],
-        ),
+              child: Image.asset(Images.rider, height: 40, width: 40)),
+          const SizedBox(width: 20),
+          const Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Free Shipping Over \$0", style: TextStyle(fontSize:16,color: Colors.white,fontWeight: FontWeight.bold)),
+              Text("Free returns and exchange", style: TextStyle(color: Colors.white)),
+            ],
+          )),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.red.shade900,
+              borderRadius: BorderRadius.circular(32),
+            ),
+            child: SvgPicture.asset(Images.call),
+          )
+        ],
       ),
     );
   }
